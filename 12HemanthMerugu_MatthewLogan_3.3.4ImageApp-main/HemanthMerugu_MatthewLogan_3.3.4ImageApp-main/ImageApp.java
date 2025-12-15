@@ -9,8 +9,8 @@ public class ImageApp
   {
 
     // use any file from the lib folder
-    String pictureFile = "C:\\Users\\6\\Downloads\\CSA Projects\\PLTW 3.3.4\\12HemanthMerugu_MatthewLogan_3.3.4ImageApp-main\\HemanthMerugu_MatthewLogan_3.3.4ImageApp-main\\lib\\rainbow.jpg";
-    String pictureFile2 = "C:\\Users\\6\\Downloads\\CSA Projects\\PLTW 3.3.4\\12HemanthMerugu_MatthewLogan_3.3.4ImageApp-main\\HemanthMerugu_MatthewLogan_3.3.4ImageApp-main\\lib2\\balloon.png";
+    String pictureFile = "/Users/hemanthkumar/Downloads/12HemanthMerugu_MatthewLogan_3.3.4ImageApp-main/HemanthMerugu_MatthewLogan_3.3.4ImageApp-main/lib/rainbow.jpg";
+    String pictureFile2 = "/Users/hemanthkumar/Downloads/12HemanthMerugu_MatthewLogan_3.3.4ImageApp-main/HemanthMerugu_MatthewLogan_3.3.4ImageApp-main/lib2/balloon.png";
 
     // Get an image, get 2d array of pixels, show a color of a pixel, and display the image
     Picture origImg = new Picture(pictureFile);
@@ -79,22 +79,16 @@ public class ImageApp
     /* to be implemented */
 
     // Image #4 Using the original image and pixels, rotate it 180 degrees
-    Picture upsidedownImage = new Picture(pictureFile);
-    Pixel[][] upsideDownPixels = upsidedownImage.getPixels2D();
-
-    /* to be implemented */
+    Picture rotated180 = rotate180(origImg);
+    rotated180.explore(); // displays the rotated image
 
     // Image #5 Using the original image and pixels, rotate image 90
-    Picture rotateImg = new Picture(pictureFile);
-    Pixel[][] rotatePixels = rotateImg.getPixels2D();
-
-    /* to be implemented */
+    Picture rotated90 = rotate90(origImg);
+    rotated90.explore(); // displays the rotated image
 
     // Image #6 Using the original image and pixels, rotate image -90
-    Picture rotateImg2 = new Picture(pictureFile);
-    Pixel[][] rotatePixels2 = rotateImg2.getPixels2D();
-
-    /* to be implemented */
+    Picture rotated270 = rotate270(origImg);
+    rotated270.explore(); // displays the rotated image
 
 
     // Final Image: Add a small image to a larger one
@@ -131,5 +125,56 @@ public class ImageApp
     int[][] test2 = new int[4][4];
 
 
+  }
+
+  // Rotate the image 180 degrees
+  public static Picture rotate180(Picture picture) {
+      Pixel[][] pixels = picture.getPixels2D();
+      int rows = pixels.length;
+      int cols = pixels[0].length;
+
+      Picture rotated = new Picture(picture);
+      Pixel[][] rotatedPixels = rotated.getPixels2D();
+
+      for (int row = 0; row < rows; row++) {
+          for (int col = 0; col < cols; col++) {
+              rotatedPixels[rows - 1 - row][cols - 1 - col].setColor(pixels[row][col].getColor());
+          }
+      }
+      return rotated;
+  }
+
+  // Rotate the image 90 degrees clockwise
+  public static Picture rotate90(Picture picture) {
+      Pixel[][] pixels = picture.getPixels2D();
+      int rows = pixels.length;
+      int cols = pixels[0].length;
+
+      Picture rotated = new Picture(cols, rows); // Swap dimensions for 90-degree rotation
+      Pixel[][] rotatedPixels = rotated.getPixels2D();
+
+      for (int row = 0; row < rows; row++) {
+          for (int col = 0; col < cols; col++) {
+              rotatedPixels[col][rows - 1 - row].setColor(pixels[row][col].getColor());
+          }
+      }
+      return rotated;
+  }
+
+  // Rotate the image 90 degrees counterclockwise
+  public static Picture rotate270(Picture picture) {
+      Pixel[][] pixels = picture.getPixels2D();
+      int rows = pixels.length;
+      int cols = pixels[0].length;
+
+      Picture rotated = new Picture(cols, rows); // Swap dimensions for 270-degree rotation
+      Pixel[][] rotatedPixels = rotated.getPixels2D();
+
+      for (int row = 0; row < rows; row++) {
+          for (int col = 0; col < cols; col++) {
+              rotatedPixels[cols - 1 - col][row].setColor(pixels[row][col].getColor());
+          }
+      }
+      return rotated;
   }
 }
