@@ -175,9 +175,6 @@ public class Picture extends SimplePicture
 
     /**
      * Paste pixels from fromPic onto this picture beginning at startRow,startCol.
-     * Respects alpha channel in the source: fully transparent pixels are skipped,
-     * fully opaque pixels replace the destination, and partially transparent
-     * pixels are alpha-blended over the destination.
      * @param fromPic the source picture (may be a PNG with alpha)
      * @param startRow destination row to start pasting (y)
      * @param startCol destination column to start pasting (x)
@@ -192,7 +189,6 @@ public class Picture extends SimplePicture
       int toWidth = toPixels[0].length;
       int fromHeight = fromPixels.length;
       int fromWidth = fromPixels[0].length;
-
       for (int fromRow = 0; fromRow < fromHeight; fromRow++) {
         int toRow = startRow + fromRow;
         if (toRow < 0 || toRow >= toHeight) continue;
@@ -200,37 +196,17 @@ public class Picture extends SimplePicture
           int toCol = startCol + fromCol;
           if (toCol < 0 || toCol >= toWidth) continue;
 
-            fromPixel = fromPixels[fromRow][fromCol];
-            toPixel = toPixels[toRow][toCol];
+          fromPixel = fromPixels[fromRow][fromCol];
+          toPixel = toPixels[toRow][toCol];
 
-            // skip source if it's pure white (treat white as transparent)
-            Color srcColorCheck = fromPixel.getColor();
-            if (srcColorCheck.getRed() == 255 && srcColorCheck.getGreen() == 255 && srcColorCheck.getBlue() == 255) {
-              continue;
-            }
+          // skip source if it's pure white (treat white as transparent)
+          Color srcColorCheck = fromPixel.getColor();
+          if (srcColorCheck.getRed() == 255 && srcColorCheck.getGreen() == 255 && srcColorCheck.getBlue() == 255) {
+            continue;
+          }
 
-            // get source alpha and handle transparency
-            int alpha = fromPixel.getAlpha(); // 0-255
-            if (alpha == 0) {
-              // fully transparent - skip
-              continue;
-            } else if (alpha == 255) {
-              // fully opaque - copy directly
-              toPixel.setColor(fromPixel.getColor());
-            } else {
-              // partial alpha - blend source over destination
-              Color src = fromPixel.getColor();
-              Color dst = toPixel.getColor();
-              double a = alpha / 255.0;
-              int r = (int) Math.round(src.getRed() * a + dst.getRed() * (1 - a));
-              int g = (int) Math.round(src.getGreen() * a + dst.getGreen() * (1 - a));
-              int b = (int) Math.round(src.getBlue() * a + dst.getBlue() * (1 - a));
-              // clamp just in case
-              r = Math.max(0, Math.min(255, r));
-              g = Math.max(0, Math.min(255, g));
-              b = Math.max(0, Math.min(255, b));
-              toPixel.setColor(new Color(r,g,b));
-            }
+          // No alpha handling: always copy non-white pixels
+          toPixel.setColor(fromPixel.getColor());
         }
       }
     }
